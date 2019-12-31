@@ -23,6 +23,7 @@ firebase.initializeApp(config);
 
 
 
+
 app.get('/screams', (req, res) =>{
     db
         .collection('screams')
@@ -76,8 +77,8 @@ app.post('/signup', (req, res) => {
     let token, userId;
     db.doc(`/users/${newUser.handle}`).get()
         .then(doc => {
-            if(doc.exists){
-                return res.status(400).json({ handle: 'this handle is already taken'});
+            if (doc.exists) {
+                return res.status(400).json({handle: 'this handle is already taken'});
             } else {
                 return firebase
                     .auth()
@@ -99,19 +100,20 @@ app.post('/signup', (req, res) => {
             return db.doc(`/users/${newUser.handle}`).set(userCredentials);
         })
         .then(() => {
-            return res.status(201).json({ token });
+            return res.status(201).json({token});
         })
         .catch(err => {
             console.error(err);
-            if(err.code === 'auth/email-already-in-use'){
+            if (err.code === 'auth/email-already-in-use') {
                 return res.status(400).json({email: 'Email is already in use'})
             } else {
                 return res.status(500).json({error: err.code});
             }
-        })
+        });
 
 
 });
+
 
 
 exports.api = functions.https.onRequest(app);
